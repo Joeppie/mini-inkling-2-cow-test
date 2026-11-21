@@ -1,10 +1,9 @@
 # mini-inkling-2-cow-test
 
-An animated SVG story, paired with a redacted copy of a two-engine agentic benchmark comparison.
+🎥 **Story:** [Watch it live](https://joeppie.github.io/mini-inkling-2-cow-test/) · [play locally](index.html)
 
-> **Redaction note.** Every benchmark figure here is public benchmark data (success rates, tokens, wall times, turns, first-token latency, decode speed, tool errors). All machine-specific details were stripped for this public copy: no device models, GPU/CPU names or memory footprints, no network ports or protocols, no internal artifact paths or directories, no seed or engine-config internals. Where any detail differs from the source, it is missing, not wrong.
-
----
+> [!NOTE]
+> **Redaction note.** The benchmark section below is a redacted rendering. Every figure is public benchmark data (success rates, tokens, wall times, turns, first-token latency, decode speed, tool errors) and every machine-specific detail has been stripped — no device models, GPU/CPU names or memory footprints, no ports or protocols, no artifact paths or directories, no seed or engine-config internals. Where any detail differs from the source, it is missing, not wrong. The story section is complete and unredacted; nothing in the story contains machine data at all.
 
 ## The story
 
