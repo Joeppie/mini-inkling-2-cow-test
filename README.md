@@ -78,7 +78,18 @@ This repository was not produced in a single pass — it is the product of an in
 
 **Round 5 — publishing. A redacted `index.html` + this README + a redacted benchmark card were committed, published with `gh`, and enabled as GitHub Pages.
 
-### The prompt (verbatim)
+### The steering that produced this project (verbatim)
+
+The story and the HTML were not written once. They were built through a sequence of correction turns — these are the user's own instructions, in order, without smoothing:
+
+1. *"Write me a simple story about a cow that went out to pasture and that had an adventure and then came back. should be at least 2000 words."*
+2. *"Make a completely animated SVG that animates every single aspect of this story, segment it so that the cow can walk off screen, or that there can be a transition like star wars does). Use text bubbles with text for the dialogue and let the entire story be animated that way. Do this in segments, create and design scenes."*
+3. *"None of the texts are readable, greta the cow and the other cows have a bad design, and should have both eyes visible. adapt and fix."*
+4. *"try again, I was stupid and was running a game at the same time"*
+5. *"operations are very slow compared to the speed of thought for the model, that is the reason for that precisely?"*
+6. *"the text balloons are still off-screen. Rather than verifying with a headless chrome, it should be possible to calculate where they end up and define a 'procedure' to determine that they do not overlap the character speaking, other visible balloons, or go out of frame. So do this, and operate in that manner to fix the dialogue/text balloons."*
+
+That is the steering that preceded the decision to make the repo. The repo and the redacted publish happened later and separately:
 
 > *"Once completed place a redacted (anonimized) version of the html together with a markdown readme, containing the specs and the earlier session created PNG comparing swift and inkling models to a new github repo (with pages) called mini-inkling-2-cow-test, include this prompt and the timings/statistics, but strip any information regarding computer-specific paths or any other sensitive information."*
 
