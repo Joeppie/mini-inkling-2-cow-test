@@ -68,13 +68,15 @@ Same engine and same harness: 5 coding tasks (a contract bug, implementing prime
 
 ## Provenance
 
-This repository was not produced in a single pass — it is the product of an interactive, back-and-forth working session between an anonymous human contributor and an agentic coding assistant, across several turns of review and rework. The honest account of that process:
+This repository was not produced in a single pass — it is the product of an interactive, back-and-forth working session between a human operator and an agentic coding assistant, across several turns of review, rework and correction. The honest account of that process:
 
 **Round 1 — the story itself.** A ~2,100-word tale about a cow that walks out of her pasture and meets a lost calf. It was then turned into an animated SVG product: a 10-segment sequence (Title → The Notice → The Walk Out → The Meadow → The Wood → The Lost Calf → The Dog → The Crossing → The Return → Home) with a warp-style iris transition, dialogue bubbles, and an auto-advance/pause toolbar.
 
 **Round 2 — review and rework.** The first render showed the cow with poorly-fitting art and unreadable balloons: two symptoms, one root cause — CSS transforms on the same element as its positioning attribute made every balloon jump to the origin. The cow was redrawn (two eyes, hooves, horns, ears, udder, tuft tail), the bubble structure was fixed, and the font sizes were raised. The user then reported that the live view was stuttering because a game was running in parallel — at which point verification moved from screenshots to real-time DevTools.
 
 **Round 3 — the procedural placement procedure.** The review ended with a firm ask: stop verifying with headless-Chrome screenshots and instead *calculate* where every balloon lands. The build now computes every box from the scene's own facts — canvas text measurement, a safe frame, a priority-ordered candidate search (above the speaker, frame-clamped, side-of, below, corner), an anti-overlap rule against the speaker's footprint and any simultaneously-visible balloons, and a tail that always points at the speaker. Because `slice` cropping could silently hide content near the viewBox edge, the story now uses a letterbox (`meet`) so nothing is ever hidden by the layout.
+
+**Round 4 — identity.** The history initially carried the editor's default account-linked identity. That was not what the operator wanted. The commits were rewritten twice: first to strip real-name and real-email blobs, then — on explicit instruction — to settle on the operator's GitHub account as the author identity. Final state: every commit carries the GitHub account — name only, with GitHub's noreply address as the email. No real name, no personal address, no persona appears anywhere in the history or the files.
 
 **Round 5 — publishing. A redacted `index.html` + this README + a redacted benchmark card were committed, published with `gh`, and enabled as GitHub Pages.
 
