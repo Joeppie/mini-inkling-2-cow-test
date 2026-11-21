@@ -7,12 +7,15 @@
 
 ## The story
 
-**Greta** walks past the fence of her pasture, meets a lost calf in the next county, walks through the shallows with it, and comes home. Ten segments, each a self-contained inline SVG (viewBox 960×540, aspect-fit letterbox).
+**Summary.** A quiet morning on a small pasture. Greta has noticed a loose north-rail gap in the fence, and she cannot leave it unfixed. Crossing the fence, she hears a small, frightened voice. It belongs to a lost calf. Greta walks out along the meadow with it, past the wood line, past a creek with a dog sniffing in the grass, and — under a first-color autumn light — takes the calf through the ford and home. No villain. No catastrophe. One neighborly cow finally doing the sensible thing.
+
+Ten segments, each a self-contained inline SVG (viewBox 960×540, aspect-fit letterbox). A **narrator caption** (italic serif card, top-center, always on-screen) carries the story beats; the dialogue bubbles carry only spoken lines.
 
 ### Spec
 
 - **Segments:** Title → The Notice → The Walk Out → The Meadow → The Wood → The Lost Calf → The Dog → The Crossing → The Return → Home
 - **Animation:** walk cycle (leg swing + body bob) in two scenes, tail sway, standing bobbing, shivering calf, scrolling meadow background, grass sway, drifting clouds, twinkling stars, flapping bird, falling leaves, animated creek ripples, moon glow, breathing farmer, moonlit dusk.
+- **Narration** — every scene carries a top-center narrator caption (serif italic, dark card, always inside the frame) that delivers the story beats, so the dialogue bubbles are reserved for spoken lines.
 - **Dialogue bubbles** are placed procedurally, never hand-placed. A canvas text measurement sets the box width; a priority-ordered candidate search then enforces three rules:
   1. The box stays inside the frame (margins from the viewBox edges),
   2. The box does not overlap any character on the scene (the speaker included),

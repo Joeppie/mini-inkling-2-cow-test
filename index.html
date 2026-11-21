@@ -139,6 +139,9 @@
   .scene.active .wingR { animation: wingFlap 0.7s ease-in-out infinite alternate; transform-origin: 0px 5px; animation-delay: -.35s; }
   .scene.active .breathe { animation: breathe 2.6s ease-in-out infinite alternate; transform-origin: 50% 100%; }
   .scene.active .bubble { opacity: 0; animation: bubblePop var(--bdur, 3s) ease-out var(--bd, 1s) forwards; transform-box: fill-box; transform-origin: 50% 100%; }
+  .nar-bg { fill: rgba(14, 20, 32, .82); stroke: rgba(240, 180, 90, .5); stroke-width: 1.5; }
+  .nar-text { font-family: Georgia, serif; font-style: italic; font-size: 20px; fill: #ffe9c2; letter-spacing: .4px; }
+  .scene.active .narration { opacity: 0; animation: bubblePop var(--bdur, 3.2s) ease-out var(--bd, 0.8s) forwards; transform-box: fill-box; transform-origin: 50% 0%; }
   .scene.active .titleBig { animation: titleFloat 5s ease-in-out infinite alternate; }
   .scene.active .titleHint { animation: blink 2.2s ease-in-out infinite; }
   .scene.active .captionEnd { opacity: 0; animation: captionIn 1.6s ease-out var(--bd, 8s) forwards; }
@@ -442,6 +445,28 @@ function measureText(lines) {
   return Math.max(...lines.map(l => measuringCtx.measureText(l).width));
 }
 
+const narrationCtx = (() => {
+  const c = document.createElement('canvas').getContext('2d');
+  if (c) c.font = 'italic 20px Georgia, serif';
+  return c;
+})();
+function measureNarration(text) {
+  if (!narrationCtx) return text.length * 10;
+  return narrationCtx.measureText(text).width;
+}
+
+function renderNarration(n) {
+  // a narrator caption pinned to the top-center of the viewBox — always on-screen
+  const textW = measureNarration(n.text);
+  const w = Math.ceil(textW + 46);
+  const h = 40;
+  const x = Math.max(14, Math.min(960 - 14 - w, 480 - w / 2));
+  return `<g class="narration" style="--bd:${n.d}s;--bdur:${n.dur}s">
+    <rect class="nar-bg" x="${x}" y="26" width="${w}" height="${h}" rx="12"/>
+    <text class="nar-text" x="${x + w / 2}" y="51" text-anchor="middle">${n.text}</text>
+  </g>`;
+}
+
 function overlap(a, b) {
   return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 }
@@ -456,7 +481,7 @@ function placeBubble(b, speaker, characters, placedBoxes) {
   const sprite = { ...speaker.box };                       // footprint of the speaker
   const pad = 8;
   const cx = sprite.x + sprite.w / 2;
-  const ideal = { x: cx - b.w / 2, y: sprite.y - 26 - b.h };
+  const ideal = { x: cx - b.w / 2, y: sprite.y - 18 - b.h };
   const idealCy = sprite.y + sprite.h / 2;
   const candidates = [
     // 1: centered above the speaker (the ideal spot)
@@ -525,8 +550,8 @@ function buildBubble(rect, b, speaker) {
 
 /* ---------------- scene definitions ---------------- */
 const scenes = [];
-function add(name, dur, svg, actors, bubbles, staticBubbles) {
-  scenes.push({ name, dur, svg, actors: actors || [], bubbles: bubbles || [] });
+function add(name, dur, svg, actors, bubbles, narration) {
+  scenes.push({ name, dur, svg, actors: actors || [], bubbles: bubbles || [], narration: narration || [] });
 }
 
 /* 0 — Title */
@@ -564,6 +589,10 @@ add('The Notice', 11, `
     { speaker: 'greta', lines: ['There is a gap', 'in the north rail.'], d: 1.3, dur: 3.6 },
     { speaker: 'farmer', lines: ['It’s a week old.', 'I’ll fix it tonight.'], d: 4.6, dur: 3.4 },
     { speaker: 'greta', lines: ['Exactly. So', 'I’m going now.'], d: 8.2, dur: 2.6 },
+  ],
+  [
+    { text: 'Morning on the pasture. Greta watches the loose north rail.', d: 0.6, dur: 3.6 },
+    { text: 'The farmer comes out with his spade.', d: 6.0, dur: 3.0 },
   ]);
 
 /* 2 — The Walk Out */
@@ -577,7 +606,9 @@ add('The Walk Out', 6, `
   <g class="walker" style="--x0:-160px;--y0:415px;--x1:1130px;--y1:415px;--dur:4.8s">
     <g class="bob" style="--legDur:.62s;--dur:.62s">${cowSVG(true, false)}</g>
   </g>
-</svg>`, [], []);
+</svg>`, [], [], [
+  { text: 'She decides, and she goes.', d: 0.4, dur: 3.6 },
+]);
 
 /* 3 — The Meadow */
 add('The Meadow', 8.5, `
@@ -600,6 +631,10 @@ add('The Meadow', 8.5, `
   ],
   [
     { speaker: 'greta', lines: ['I decided the wind', 'had something to tell me.'], d: 1.6, dur: 3.6 },
+  ],
+  [
+    { text: 'The grass out here is shorter and sweeter.', d: 0.4, dur: 3.2 },
+    { text: 'She is not in a hurry.', d: 4.3, dur: 2.8 },
   ]);
 
 /* 4 — The Wood */
@@ -619,6 +654,10 @@ add('The Wood', 8.5, `
   ],
   [
     { speaker: 'greta', lines: ['Cold air. Sweet smells.', 'She had never seen fruit.'], d: 1.5, dur: 3.8 },
+  ],
+  [
+    { text: 'The birch trees are bare and the air is sweet.', d: 0.5, dur: 3.4 },
+    { text: 'She has never seen fruit.', d: 4.6, dur: 3.2 },
   ]);
 
 /* 5 — The Lost Calf */
@@ -642,6 +681,10 @@ add('The Lost Calf', 9.5, `
     { speaker: 'greta', lines: ['I don’t know you.'], d: 1.4, dur: 3.2 },
     { speaker: 'calf', lines: ['…'], d: 4.4, dur: 2.4 },
     { speaker: 'greta', lines: ['I’m Greta.'], d: 7.1, dur: 2.2 },
+  ],
+  [
+    { text: 'A calf. Small. Alone. Shaking.', d: 0.4, dur: 3.2 },
+    { text: 'Greta kneels to talk to it.', d: 4.8, dur: 3.0 },
   ]);
 
 /* 6 — The Dog */
@@ -665,6 +708,10 @@ add('The Dog', 9.5, `
   [
     { speaker: 'greta', lines: ['You don’t own', 'this cow.'], d: 1.3, dur: 3.1 },
     { speaker: 'greta', lines: ['Robert. It’s a farm dog.', 'He’s not dangerous.'], d: 4.8, dur: 3.2 },
+  ],
+  [
+    { text: 'A dog comes sniffing from the meadow.', d: 0.5, dur: 3.4 },
+    { text: 'Greta stands tall. She is bigger than the problem.', d: 5.6, dur: 3.2 },
   ]);
 
 /* 7 — The Crossing */
@@ -688,6 +735,10 @@ add('The Crossing', 10, `
   ],
   [
     { speaker: 'greta', lines: ['The ford is the safe crossing.', 'The narrows are deeper.'], d: 1.6, dur: 3.6 },
+  ],
+  [
+    { text: 'A creek crosses the meadow. The ford is below the narrows.', d: 0.6, dur: 3.6 },
+    { text: 'They cross together.', d: 5.6, dur: 2.6 },
   ]);
 
 /* 8 — The Return */
@@ -701,7 +752,10 @@ add('The Return', 7, `
     <g transform="translate(58,24) scale(.55)"><g transform="scale(-1,1)"><g class="shiverSlow" style="animation-duration:1.5s">${cowSVG(false, false)}</g></g></g>
     <g class="bob" style="--legDur:.62s;--dur:.62s"><g transform="scale(-1,1)">${cowSVG(true, false)}</g></g>
   </g>
-</svg>`, [], []);
+</svg>`, [], [], [
+  { text: 'The light is going. They head back.', d: 0.6, dur: 2.8 },
+  { text: 'Home again.', d: 3.6, dur: 2.4 },
+]);
 
 /* 9 — Home */
 add('Home', 10.5, `
@@ -726,6 +780,11 @@ add('Home', 10.5, `
     { speaker: 'farmer', lines: ['You’re the one', 'who found it.'], d: 1.5, dur: 3.1 },
     { speaker: 'farmer', lines: ['Fix the fence', 'tonight — good work.'], d: 4.8, dur: 3.2 },
     { speaker: 'greta', lines: ['Yes.'], d: 8.0, dur: 2.2 },
+  ],
+  [
+    { text: 'The farmer waits at the barn door.', d: 0.6, dur: 2.8 },
+    { text: 'The calf shakes a little less.', d: 4.4, dur: 2.6 },
+    { text: 'Greta comes home.', d: 7.4, dur: 2.6 },
   ]);
 
 /* ---------------- assemble + place + render ---------------- */
@@ -742,8 +801,9 @@ function buildScene(def) {
     placedBoxes.push({ box: rect, d: b.d, dur: b.dur });
     return buildBubble(rect, b, speaker);
   }).join('');
+  const narrationHtml = (def.narration || []).map(renderNarration).join('');
   const idx = def.svg.lastIndexOf('</svg>');
-  const svg = def.svg.slice(0, idx) + bubbleHtml + def.svg.slice(idx);
+  const svg = def.svg.slice(0, idx) + bubbleHtml + narrationHtml + def.svg.slice(idx);
   return { name: def.name, dur: def.dur, svg };
 }
 
